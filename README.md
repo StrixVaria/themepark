@@ -1,4 +1,4 @@
-themepark
-=========
+Theme Park
+==========
 
-Incremental
+This will eventually be an incremental game.
