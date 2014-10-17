@@ -104,11 +104,11 @@ var theme_park = {
   },
   getCostForRide: function(ride_info){
     var level = this.ride_count[ride_info.id];
-    return ride_info.initial_cost * Math.pow(1.2, level);
+    return Math.ceil(ride_info.initial_cost * Math.pow(1.2, level));
   },
   getCostForStore: function(store_info){
     var level = this.store_count[store_info.id];
-    return store_info.initial_cost * Math.pow(1.2, level);
+    return Math.ceil(store_info.initial_cost * Math.pow(1.2, level));
   },
   buyRide: function(ride_number){
     var ride_info = rides[ride_number];
