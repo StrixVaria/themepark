@@ -11,6 +11,24 @@ var rides = [
     id: 'hauntedhouse',
     initial_cost: 250,
     base_attraction: 8
+  },
+  {
+    name: 'Teacups!',
+    id: 'teacups',
+    initial_cost: 1000,
+    base_attraction: 15
+  },
+  {
+    name: 'Ferris Wheel',
+    id: 'ferriswheel',
+    initial_cost: 8000,
+    base_attraction: 25
+  },
+  {
+    name: 'Spinning Swing',
+    id: 'swing',
+    initial_cost: 25000,
+    base_attraction: 60
   }
 ]
 
@@ -27,7 +45,26 @@ var stores = [
     id: 'burger',
     initial_cost: 250,
     base_income: 2
+  },
+  {
+    name: 'Maps',
+    id: 'maps',
+    initial_cost: 1000,
+    base_income: 3
+  },
+  {
+    name: 'T-Shirts',
+    id: 'shirts',
+    initial_cost: 8000,
+    base_income: 5
+  },
+  {
+    name: 'Soda',
+    id: 'soda',
+    initial_cost: 25000,
+    base_income: 8
   }
+  // Ice cream, lemonade
 ]
 
 var theme_park = {
@@ -37,16 +74,16 @@ var theme_park = {
   fractional_visitors: 0,
   visitors: 0,
   // How many people can enter your park at a time.
-  visitor_dx: 1,
+  visitor_dx: 0.25,
   // The chance per tick that new visitors arrive.
-  visitor_chance: 0.1,
+  visitor_chance: 1,
   money: 100,
   ride_count: {},
+  rides_rendered: 1,
   store_count: {},
+  stores_rendered: 1,
   init: function(){
     window.timer = setInterval(function(){theme_park.tick()},1000);
-    this.addRide(1);
-    this.addStore(1);
   },
   tick: function(){
     this.visitorStep();
@@ -54,6 +91,8 @@ var theme_park = {
     this.money += this.calculateIncome() * this.visitors;
     $('#visitors').text(this.visitors);
     $('#money').text(this.money);
+    this.renderNewRides();
+    this.renderNewStores();
   },
   recalculateAttraction: function(){
     var attr = 0;
@@ -142,6 +181,20 @@ var theme_park = {
   incMoney: function(amount){
     this.money += amount;
     $('#money').text(this.money);
+  },
+  renderNewRides: function(){
+    if(this.rides_rendered >= rides.length) return;
+    if(this.money >= rides[this.rides_rendered].initial_cost / 2){
+      this.addRide(this.rides_rendered);
+      this.rides_rendered++;
+    }
+  },
+  renderNewStores: function(){
+    if(this.stores_rendered >= stores.length) return;
+    if(this.money >= stores[this.stores_rendered].initial_cost / 2){
+      this.addStore(this.stores_rendered);
+      this.stores_rendered++;
+    }
   }
 };
 $(document).ready(function(){
