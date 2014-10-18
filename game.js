@@ -116,9 +116,10 @@ var theme_park = {
   tick: function(){
     this.visitorStep();
     this.visitors = Math.floor(this.fractional_visitors);
-    this.money += this.calculateIncome() * this.visitors;
+    var income = this.calculateIncome();
+    this.incMoney(income);
+    $('#money-sec').text(formatNumber(income));
     $('#visitors').text(this.visitors);
-    $('#money').text(this.money);
     this.renderNewRides();
     this.renderNewStores();
   },
@@ -136,7 +137,7 @@ var theme_park = {
     var income = 0;
     for(x = 0; x < stores.length; x++){
       if(this.store_count.hasOwnProperty(stores[x].id)){
-        income += this.store_count[stores[x].id] * stores[x].base_income;
+        income += this.store_count[stores[x].id] * stores[x].base_income * this.visitors;
       }
     }
     return income;
@@ -145,7 +146,7 @@ var theme_park = {
     var ride_info = rides[ride_number];
     var box = $('<div/>', {'class': 'item-box'});
     box.append($('<div/>', {'class': 'item-name', html: ride_info.name + ' (<span id="' + ride_info.id + '-level" class="level">Unowned</span>)'}));
-    box.append($('<button/>', {id: 'buy-' + ride_info.id, 'class': 'purchase', html: '$<span id="' + ride_info.id + '-cost">' + ride_info.initial_cost + '</span>', onClick: 'theme_park.buyRide(' + ride_number + ')'}));
+    box.append($('<button/>', {id: 'buy-' + ride_info.id, 'class': 'purchase', html: '$<span id="' + ride_info.id + '-cost">' + formatNumber(ride_info.initial_cost) + '</span>', onClick: 'theme_park.buyRide(' + ride_number + ')'}));
     box.append($('<div/>', {'class': 'details', html: 'Gives <span id="' + ride_info.id + '-attr">' + ride_info.base_attraction + '</span> attraction.'}));
     $('#rides').append(box);
   },
@@ -153,7 +154,7 @@ var theme_park = {
     var store_info = stores[store_number];
     var box = $('<div/>', {'class': 'item-box'});
     box.append($('<div/>', {'class': 'item-name', html: store_info.name + ' (<span id="' + store_info.id + '-level" class="level">Unowned</span>)'}));
-    box.append($('<button/>', {id: 'buy-' + store_info.id, 'class': 'purchase', html: '$<span id="' + store_info.id + '-cost">' + store_info.initial_cost + '</span>', onClick: 'theme_park.buyStore(' + store_number + ')'}));
+    box.append($('<button/>', {id: 'buy-' + store_info.id, 'class': 'purchase', html: '$<span id="' + store_info.id + '-cost">' + formatNumber(store_info.initial_cost) + '</span>', onClick: 'theme_park.buyStore(' + store_number + ')'}));
     box.append($('<div/>', {'class': 'details', html: 'Gives $<span id="' + store_info.id + '-inc">' + store_info.base_income + '</span> per visitor per second.'}));
     $('#stores').append(box);
   },
@@ -187,7 +188,7 @@ var theme_park = {
       this.incMoney(-cost);
       this.ride_count[ride_info.id] += 1;
       this.recalculateAttraction();
-      $('#' + ride_info.id + '-cost').text(this.getCostForRide(ride_info));
+      $('#' + ride_info.id + '-cost').text(formatNumber(this.getCostForRide(ride_info)));
       $('#' + ride_info.id + '-attr').text(this.ride_count[ride_info.id] * ride_info.base_attraction);
       $('#' + ride_info.id + '-level').text('Level ' + this.ride_count[ride_info.id]);
     }
@@ -201,14 +202,14 @@ var theme_park = {
     if(cost <= this.money){
       this.incMoney(-cost);
       this.store_count[store_info.id] += 1;
-      $('#' + store_info.id + '-cost').text(this.getCostForStore(store_info));
+      $('#' + store_info.id + '-cost').text(formatNumber(this.getCostForStore(store_info)));
       $('#' + store_info.id + '-inc').text(this.store_count[store_info.id] * store_info.base_income);
       $('#' + store_info.id + '-level').text('Level ' + this.store_count[store_info.id]);
     }
   },
   incMoney: function(amount){
     this.money += amount;
-    $('#money').text(this.money);
+    $('#money').text(formatNumber(this.money));
   },
   renderNewRides: function(){
     if(this.rides_rendered >= rides.length) return;
@@ -228,3 +229,6 @@ var theme_park = {
 $(document).ready(function(){
   theme_park.init()
 });
+function formatNumber(num){
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
