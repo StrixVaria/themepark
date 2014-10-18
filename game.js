@@ -3,68 +3,96 @@ var rides = [
   {
     name: 'Carousel',
     id: 'carousel',
-    initial_cost: 50,
-    base_attraction: 5
+    initial_cost: 20,
+    base_attraction: 2
   },
   {
     name: 'Haunted House',
     id: 'hauntedhouse',
-    initial_cost: 250,
-    base_attraction: 8
+    initial_cost: 12000,
+    base_attraction: 6
   },
   {
     name: 'Teacups!',
     id: 'teacups',
-    initial_cost: 1000,
+    initial_cost: 485000,
     base_attraction: 15
   },
   {
     name: 'Ferris Wheel',
     id: 'ferriswheel',
-    initial_cost: 8000,
+    initial_cost: 3250000,
     base_attraction: 25
   },
   {
     name: 'Spinning Swing',
     id: 'swing',
-    initial_cost: 25000,
+    initial_cost: 15000000,
     base_attraction: 60
+  },
+  {
+    name: 'Wooden Roller Coaster',
+    id: 'wood-coaster',
+    initial_cost: 125000000,
+    base_attraction: 100
+  },
+  {
+    name: 'Bumper Cars',
+    id: 'bumpers',
+    initial_cost: 1000000000,
+    base_attraction: 180
   }
 ]
 
-// STORES
 var stores = [
   {
     name: 'Hot Dog Stand',
     id: 'hotdog',
-    initial_cost: 50,
+    initial_cost: 20,
     base_income: 1
   },
   {
     name: 'Burger Joint',
     id: 'burger',
-    initial_cost: 250,
-    base_income: 2
+    initial_cost: 1000,
+    base_income: 4
   },
   {
     name: 'Maps',
     id: 'maps',
-    initial_cost: 1000,
-    base_income: 3
+    initial_cost: 25000,
+    base_income: 12
   },
   {
     name: 'T-Shirts',
     id: 'shirts',
-    initial_cost: 8000,
-    base_income: 5
+    initial_cost: 400000,
+    base_income: 22
   },
   {
     name: 'Soda',
     id: 'soda',
-    initial_cost: 25000,
-    base_income: 8
+    initial_cost: 3000000,
+    base_income: 35
+  },
+  {
+    name: 'Ice Cream',
+    id: 'ice-cream',
+    initial_cost: 12000000,
+    base_income: 50
+  },
+  {
+    name: 'Lemonade',
+    id: 'lemonade',
+    initial_cost: 100000000,
+    base_income: 75
+  },
+  {
+    name: 'Stuffed Animals',
+    id: 'animals',
+    initial_cost: 750000000,
+    base_income: 110
   }
-  // Ice cream, lemonade
 ]
 
 var theme_park = {
@@ -77,7 +105,7 @@ var theme_park = {
   visitor_dx: 0.25,
   // The chance per tick that new visitors arrive.
   visitor_chance: 1,
-  money: 100,
+  money: 40,
   ride_count: {},
   rides_rendered: 1,
   store_count: {},
@@ -143,11 +171,11 @@ var theme_park = {
   },
   getCostForRide: function(ride_info){
     var level = this.ride_count[ride_info.id];
-    return Math.ceil(ride_info.initial_cost * Math.pow(1.2, level));
+    return Math.ceil(ride_info.initial_cost * Math.pow(1.5, level));
   },
   getCostForStore: function(store_info){
     var level = this.store_count[store_info.id];
-    return Math.ceil(store_info.initial_cost * Math.pow(1.2, level));
+    return Math.ceil(store_info.initial_cost * Math.pow(1.5, level));
   },
   buyRide: function(ride_number){
     var ride_info = rides[ride_number];
