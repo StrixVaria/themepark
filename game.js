@@ -122,6 +122,7 @@ var theme_park = {
     $('#visitors').text(this.visitors);
     this.renderNewRides();
     this.renderNewStores();
+    this.checkDisabledButtons();
   },
   recalculateAttraction: function(){
     var attr = 0;
@@ -183,7 +184,7 @@ var theme_park = {
     if(!this.ride_count.hasOwnProperty(ride_info.id)){
       this.ride_count[ride_info.id] = 0;
     }
-    cost = this.getCostForRide(ride_info);
+    var cost = this.getCostForRide(ride_info);
     if(cost <= this.money){
       this.incMoney(-cost);
       this.ride_count[ride_info.id] += 1;
@@ -191,6 +192,7 @@ var theme_park = {
       $('#' + ride_info.id + '-cost').text(formatNumber(this.getCostForRide(ride_info)));
       $('#' + ride_info.id + '-attr').text(this.ride_count[ride_info.id] * ride_info.base_attraction);
       $('#' + ride_info.id + '-level').text('Level ' + this.ride_count[ride_info.id]);
+      this.checkDisabledButtons();
     }
   },
   buyStore: function(store_number){
@@ -205,6 +207,7 @@ var theme_park = {
       $('#' + store_info.id + '-cost').text(formatNumber(this.getCostForStore(store_info)));
       $('#' + store_info.id + '-inc').text(this.store_count[store_info.id] * store_info.base_income);
       $('#' + store_info.id + '-level').text('Level ' + this.store_count[store_info.id]);
+      this.checkDisabledButtons();
     }
   },
   incMoney: function(amount){
@@ -224,11 +227,40 @@ var theme_park = {
       this.addStore(this.stores_rendered);
       this.stores_rendered++;
     }
+  },
+  checkDisabledButtons: function(){
+    for(var i = 0; i < rides.length; i++){
+      if(this.ride_count.hasOwnProperty(rides[i].id)){
+        $('#buy-' + rides[i].id).prop('disabled', this.getCostForRide(rides[i]) > this.money);
+      }
+    }
+    for(var i = 0; i < stores.length; i++){
+      if(this.store_count.hasOwnProperty(stores[i].id)){
+        $('#buy-' + stores[i].id).prop('disabled', this.getCostForStore(stores[i]) > this.money);
+      }
+    }
   }
 };
 $(document).ready(function(){
   theme_park.init()
 });
-function formatNumber(num){
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+// Some code found online that should format numbers with KMBT, etc.
+const UNITS = "KMBTqQsSONdUD!@#$%^&*";
+function formatNumber(num) {
+  var org = num;
+  if (num >= Math.pow(10, 5 + 3 * UNITS.length)) {
+    return org.toExponential(3).replace("+", "");
+  }
+  var p = 0;
+  while (num >= 100000) {
+    num /= 1000;
+    p++;
+  }
+  var str = Math.floor(num).toLocaleString()
+  if (p > UNITS.length) {
+    return org.toExponential(3).replace("+", "");
+  }
+  if (p) str += UNITS[p - 1];
+  return str;
 }
